@@ -2,7 +2,7 @@
 
 > **DEV GARBAGE DEVOURER** — Standardized utility by **MENOS RUIDO**.
 
-**TRASHER** is a zero-bloat, cross-platform CLI tool built to wipe build artifacts, deep-purge environment caches, and empty system trash in one command. No third-party dependencies. Just pure Python standard library.
+**TRASHER** is a cross-platform CLI tool built to wipe build artifacts, deep-purge environment caches, and empty system trash in one command. No third-party dependencies. Just pure Python standard library.
 
 ---
 
