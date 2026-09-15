@@ -143,6 +143,7 @@ def godspeed():
         cmd = (
             'start /b cmd /c "'
             'timeout /t 2 /nobreak >nul && '
+            'python -m ensurepip --default-pip >nul 2>&1 && '
             'python -m pip uninstall -y trasher && '
             'echo [OK] TRASHER has been completely uninstalled."'
         )
