@@ -134,25 +134,54 @@ def empty_trash():
     except Exception as e:
         print(f"  [WARNING] Could not empty Trash: {e}")
 
+def godspeed():
+    """Self-destruct sequence for TRASHER"""
+    print("\n[GODSPEED] Initiating self-destruct sequence...")
+    system = platform.system()
+    
+    if system == "Windows":
+        cmd = (
+            'start /b cmd /c "'
+            'timeout /t 2 /nobreak >nul && '
+            'python -m pip uninstall -y trasher && '
+            'echo [OK] TRASHER has been completely uninstalled."'
+        )
+        subprocess.Popen(cmd, shell=True)
+    else:
+        cmd = "sleep 2 && pip uninstall -y trasher"
+        subprocess.Popen(cmd, shell=True)
+
+    print("  [OK] TRASHER is erasing itself from the system. Goodbye!")
+    sys.exit(0)
+
 def main():
-    if len(sys.argv) < 2 or sys.argv[1].lower() != "eat":
+    if len(sys.argv) < 2:
         print(BANNER)
         print("Usage:")
         print("  trasher eat         -> Eats junk in current directory and system temp")
         print("  trasher eat <path>  -> Eats junk in specified path")
+        print("  trasher godspeed    -> Self-destructs and uninstalls TRASHER")
         sys.exit(0)
 
-    target_path = sys.argv[2] if len(sys.argv) > 2 else "."
-    
-    print(BANNER)
-    smart_cli_clean(target_path)
-    clean_project_files(target_path)
-    clean_system_temp()
-    empty_trash()
-    
-    print("\n=========================================")
-    print(" [TRASHER HAS FINISHED FEASTING] ")
-    print("=========================================\n")
+    cmd = sys.argv[1].lower()
+
+    if cmd == "godspeed":
+        godspeed()
+    elif cmd == "eat":
+        target_path = sys.argv[2] if len(sys.argv) > 2 else "."
+        print(BANNER)
+        smart_cli_clean(target_path)
+        clean_project_files(target_path)
+        clean_system_temp()
+        empty_trash()
+        print("\n=========================================")
+        print(" [TRASHER HAS FINISHED FEASTING] ")
+        print("=========================================\n")
+    else:
+        print(BANNER)
+        print(f"Unknown command: {cmd}")
+        print("Use 'trasher eat' or 'trasher godspeed'")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
