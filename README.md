@@ -13,7 +13,7 @@
 Install globally on **Windows**, **macOS**, or **Linux** via `pip`:
 
 ```bash
-pip install [git+https://github.com/imjustasweetboy-coder/trasher.git](git+https://github.com/imjustasweetboy-coder/trasher.git)
+pip install git+https://github.com/imjustasweetboy-coder/trasher.git
 ```
 ---
 
@@ -63,6 +63,8 @@ trasher godspeed
 2. Gracefully exits the active terminal harness.
 3. Automatically triggers pip uninstall -y trasher behind the scenes.
 4. Cleans up system binaries and site-package entries cleanly.
+
+---
 
 ## Stack & Architecture
 
