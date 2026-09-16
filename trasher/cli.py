@@ -7,6 +7,8 @@ import ctypes
 import tempfile
 import subprocess
 
+VERSION = "1.6.0"
+
 # Residual build directories and target extension lists
 PROJECT_GARBAGE_DIRS = {
     'build', '.dart_tool', '__pycache__', '.pytest_cache', 
