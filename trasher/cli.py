@@ -89,7 +89,7 @@ def clean_system_temp():
 def clean_project_files(root_path):
     abs_target = os.path.abspath(root_path).lower()
 
-    # SAFEGUARD: Abort if running on user root or protected system directory
+    # 1. BLOQUEO EN LA RAÍZ: Impedir ejecutar directamente en tu carpeta de usuario
     if abs_target in PROTECTED_PATHS:
         print(f"\n  [SAFEGUARD BLOCKED] Cannot run TRASHER directly on '{os.path.abspath(root_path)}'.")
         print("  Please run 'trasher eat' inside a specific project folder.")
@@ -99,17 +99,24 @@ def clean_project_files(root_path):
     deleted_files = 0
     deleted_dirs = 0
 
-    for dirpath, dirnames, filenames in os.walk(root_path, topdown=False):
+    for dirpath, dirnames, filenames in os.walk(root_path, topdown=True):
+        # 2. FRENO DE MANO EN EL RECORRIDO: Modificar 'dirnames' in-place para que os.walk NUNCA entre a AppData
+        dirnames[:] = [d for d in dirnames if d.lower() not in {'appdata', 'program files', 'windows', '$recycle.bin'}]
+
+        # Eliminar carpetas que coincidan con la basura de proyectos
         for d in list(dirnames):
-            if d in PROJECT_GARBAGE_DIRS:
+            if d.lower() in PROJECT_GARBAGE_DIRS:
                 full_path = os.path.join(dirpath, d)
                 try:
                     shutil.rmtree(full_path)
                     print(f"  [DELETED DIR] {full_path}")
                     deleted_dirs += 1
+                    # Remover de dirnames para no intentar entrar a una carpeta que ya borramos
+                    dirnames.remove(d)
                 except Exception:
                     pass
 
+        # Eliminar archivos con extensiones basura
         for f in filenames:
             ext = os.path.splitext(f)[1].lower()
             if ext in PROJECT_GARBAGE_EXTS:
