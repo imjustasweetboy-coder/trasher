@@ -33,19 +33,17 @@ Or target a specific project or directory path:
 trasher eat ./path/to/target-project
 ```
 
-### What TRASHER Devours Automatically:
-
-* __Smart Environment Detection:__
-  * Executes `flutter clean` when `pubspec.yaml` is present.
-  * Prunes and optimizes local databases via `git gc --prune=now`.
-  * Purges global package download caches using `pip cache purge`.
-  * Removes dangling containers and unreferenced images with `docker system prune -f`.
+#### What `trasher eat` Devours Automatically:
+* **Smart Environment Detection**:
+  * **Git Repositories**: Prunes and optimizes local databases via `git gc --prune=now`.
+  * **Pip Cache**: Purges global package download caches using `pip cache purge`.
+  * **Docker**: Removes dangling containers and unreferenced images with `docker system prune -f`.
     
-* __Artifact Shredding:__
-  * Recursively purges `node_modules`, `build`, `.dart_tool`, `__pycache__`, `.pytest_cache`, `.godot`, `dist`, `bin`, `obj`, `.cache`, `.vs`, `out`, and `DerivedData`.
-  * Wipes build residue extensions including `.tmp`, `.log`, `.pyc`, `.pyo`, `.spec`, `.coverage`, `.pdb`, `.ilk`, `.exp`, and `.lib`.
-
-* __System Level Maintenance:__
+* **Artifact Shredding**:
+  * **Directories**: Recursively purges `node_modules`, `build`, `__pycache__`, `.pytest_cache`, `.godot`, `dist`, `bin`, `obj`, `.cache`, `.vs`, `out`, and `DerivedData`.
+  * **Files**: Wipes build residue extensions including `.tmp`, `.log`, `.pyc`, `.pyo`, `.spec`, `.coverage`, `.pdb`, `.ilk`, `.exp`, and `.lib`.
+    
+* **System Level Maintenance**:
   * Cleans current user OS temporary directories (`Temp` / `/tmp`).
   * Programmatically empties Windows Recycle Bin or Linux system Trash.
  
