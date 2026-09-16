@@ -10,13 +10,22 @@ import subprocess
 # Residual build directories and target extension lists
 PROJECT_GARBAGE_DIRS = {
     'build', '.dart_tool', '__pycache__', '.pytest_cache', 
-    'node_modules', '.godot', 'dist', 'bin', 'obj', '.cache',
-    '.vs', 'out', 'DerivedData'
+    'node_modules', '.godot', 'dist', 'obj', '.cache',
+    '.vs', 'DerivedData'
 }
 
 PROJECT_GARBAGE_EXTS = {
     '.tmp', '.log', '.pyc', '.pyo', '.spec', '.coverage',
     '.pdb', '.ilk', '.exp', '.lib'
+}
+
+# Rutas del sistema absolutamente prohibidas para escaneo recursivo
+PROTECTED_PATHS = {
+    os.path.expanduser("~"),  # Evita C:\Users\marcu a secas
+    os.path.join(os.path.expanduser("~"), "AppData"),
+    "C:\\Windows",
+    "C:\\Program Files",
+    "C:\\Program Files (x86)"
 }
 
 BANNER = r"""
