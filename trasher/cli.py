@@ -38,13 +38,6 @@ def run_cmd(command):
 def smart_cli_clean(root_path):
     print("\n[TRASHER] Sniffing out environment clutter...")
 
-    # Flutter / Dart Projects
-    if os.path.exists(os.path.join(root_path, "pubspec.yaml")):
-        if shutil.which("flutter"):
-            print("  [EAT] Devouring Flutter cache ('flutter clean')...")
-            if run_cmd("flutter clean"):
-                print("  [OK] Flutter project cleaned.")
-
     # Git Repositories
     if os.path.exists(os.path.join(root_path, ".git")):
         print("  [EAT] Pruning local Git database ('git gc')...")
