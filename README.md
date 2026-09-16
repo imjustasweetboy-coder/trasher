@@ -55,7 +55,7 @@ Self-destruct and completely purge TRASHER from your system without leaving orph
 trasher godspeed
 ```
 
-### How SELF-DESTRUCTION Works:
+### How `trasher godspeed` Works:
 
 1. Spawns a background asynchronous detached process.
 2. Gracefully exits the active terminal harness.
