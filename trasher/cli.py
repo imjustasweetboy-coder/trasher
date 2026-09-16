@@ -55,7 +55,7 @@ def smart_cli_clean(root_path):
     if shutil.which("pip") or shutil.which("pip3"):
         print("  [EAT] Purging global Python/Pip package cache...")
         pip_cmd = "pip" if shutil.which("pip") else "pip3"
-        run_cmd(f"{pip_cmd} cache purge")
+        run_cmd(f'"{sys.executable}" -m pip cache purge')
         print("  [OK] Pip cache purged.")
 
     # Docker
@@ -138,6 +138,7 @@ def godspeed():
     """Self-destruct sequence for TRASHER"""
     print("\n[GODSPEED] Initiating self-destruct sequence...")
     system = platform.system()
+    py_bin = sys.executable
     
     if system == "Windows":
         cmd = (
