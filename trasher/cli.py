@@ -172,12 +172,16 @@ def main():
         print("Usage:")
         print("  trasher eat         -> Eats junk in current directory and system temp")
         print("  trasher eat <path>  -> Eats junk in specified path")
+        print("  trasher --version   -> Shows current version")
         print("  trasher godspeed    -> Self-destructs and uninstalls TRASHER")
         sys.exit(0)
 
     cmd = sys.argv[1].lower()
 
-    if cmd == "godspeed":
+    if cmd in ("--version", "-v", "version"):
+        print(f"TRASHER v{VERSION}")
+        sys.exit(0)
+    elif cmd == "godspeed":
         godspeed()
     elif cmd == "eat":
         target_path = sys.argv[2] if len(sys.argv) > 2 else "."
