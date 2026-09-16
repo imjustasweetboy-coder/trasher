@@ -19,13 +19,14 @@ PROJECT_GARBAGE_EXTS = {
     '.pdb', '.ilk', '.exp', '.lib'
 }
 
-# Rutas del sistema absolutamente prohibidas para escaneo recursivo
+# Absolute protected paths to prevent accidental root recursive wipes
 PROTECTED_PATHS = {
-    os.path.expanduser("~"),  # Evita C:\Users\marcu a secas
-    os.path.join(os.path.expanduser("~"), "AppData"),
-    "C:\\Windows",
-    "C:\\Program Files",
-    "C:\\Program Files (x86)"
+    os.path.abspath(os.path.expanduser("~")).lower(),
+    os.path.abspath(os.path.join(os.path.expanduser("~"), "AppData")).lower(),
+    "c:\\",
+    "c:\\windows",
+    "c:\\program files",
+    "c:\\program files (x86)"
 }
 
 BANNER = r"""
@@ -56,7 +57,6 @@ def smart_cli_clean(root_path):
     # Pip Cache
     if shutil.which("pip") or shutil.which("pip3"):
         print("  [EAT] Purging global Python/Pip package cache...")
-        pip_cmd = "pip" if shutil.which("pip") else "pip3"
         run_cmd(f'"{sys.executable}" -m pip cache purge')
         print("  [OK] Pip cache purged.")
 
@@ -87,6 +87,14 @@ def clean_system_temp():
     print(f"  [OK] Devoured {files_deleted} temporary files.")
 
 def clean_project_files(root_path):
+    abs_target = os.path.abspath(root_path).lower()
+
+    # SAFEGUARD: Abort if running on user root or protected system directory
+    if abs_target in PROTECTED_PATHS:
+        print(f"\n  [SAFEGUARD BLOCKED] Cannot run TRASHER directly on '{os.path.abspath(root_path)}'.")
+        print("  Please run 'trasher eat' inside a specific project folder.")
+        return
+
     print(f"\n[TRASHER] Shredding target directory: {os.path.abspath(root_path)}")
     deleted_files = 0
     deleted_dirs = 0
@@ -146,13 +154,13 @@ def godspeed():
         cmd = (
             'start /b cmd /c "'
             'timeout /t 2 /nobreak >nul && '
-            'python -m ensurepip --default-pip >nul 2>&1 && '
-            'python -m pip uninstall -y trasher && '
+            f'"{py_bin}" -m ensurepip --default-pip >nul 2>&1 && '
+            f'"{py_bin}" -m pip uninstall -y trasher && '
             'echo [OK] TRASHER has been completely uninstalled."'
         )
         subprocess.Popen(cmd, shell=True)
     else:
-        cmd = "sleep 2 && pip uninstall -y trasher"
+        cmd = f'sleep 2 && "{py_bin}" -m pip uninstall -y trasher'
         subprocess.Popen(cmd, shell=True)
 
     print("  [OK] TRASHER is erasing itself from the system. Goodbye!")
