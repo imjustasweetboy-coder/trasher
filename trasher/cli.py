@@ -6,6 +6,7 @@ import platform
 import ctypes
 import tempfile
 import subprocess
+import time
 
 VERSION = "1.6.0"
 
@@ -32,6 +33,9 @@ PROTECTED_DIR_NAMES = {
     '.vscode',
     '.android'
 }
+
+# Carpetas de entornos virtuales locales
+VENV_GARBAGE_DIRS = {'venv', '.venv', 'env', '.env'}
 
 BANNER = r"""
   _____ _____    _    ____  _   _ _____ ____  
@@ -125,6 +129,45 @@ def clean_project_files(root_path):
 
     print(f"  [OK] Removed {deleted_dirs} directories and {deleted_files} junk files.")
 
+def clean_orphan_dependencies(root_path, days_inactive=30):
+    print("\n[TRASHER] Hunting down orphaned virtual environments & unused packages...")
+    deleted_venvs = 0
+    now = time.time()
+    max_idle_seconds = days_inactive * 86400
+
+    # 1. Poda de entornos virtuales (.venv / venv) inactivos por más de X días
+    for dirpath, dirnames, filenames in os.walk(root_path, topdown=True):
+        dirnames[:] = [d for d in dirnames if d.lower() not in PROTECTED_DIR_NAMES]
+
+        for d in list(dirnames):
+            if d.lower() in VENV_GARBAGE_DIRS:
+                full_path = os.path.join(dirpath, d)
+                # Verifica la última fecha de modificación del entorno
+                try:
+                    mtime = os.path.getmtime(full_path)
+                    if (now - mtime) > max_idle_seconds:
+                        shutil.rmtree(full_path)
+                        print(f"  [DELETED ORPHAN VENV] {full_path} (Inactive > {days_inactive} days)")
+                        deleted_venvs += 1
+                        dirnames.remove(d)
+                except Exception:
+                    pass
+
+    # 2. Limpieza global de paquetes huérfanos con administradores de paquetes (si existen)
+    if shutil.which("npm"):
+        print("  [EAT] Cleaning global npm cache...")
+        run_cmd("npm cache clean --force")
+
+    if shutil.which("pnpm"):
+        print("  [EAT] Pruning unused pnpm store packages...")
+        run_cmd("pnpm store prune")
+
+    if shutil.which("flutter"):
+        print("  [EAT] Cleaning global Flutter/Dart pub cache...")
+        run_cmd("flutter pub cache clean --force")
+
+    print(f"  [OK] Removed {deleted_venvs} abandoned virtual environments.")
+
 def empty_trash():
     print("\n[TRASHER] Emptying System Trash / Recycle Bin...")
     system = platform.system()
@@ -174,7 +217,7 @@ def main():
         print("Usage:")
         print("  trasher eat         -> Eats junk in current directory and system temp")
         print("  trasher eat <path>  -> Eats junk in specified path")
-        print("  trasher --version   -> Shows current version")
+        print("  trasher version   -> Shows current version")
         print("  trasher godspeed    -> Self-destructs and uninstalls TRASHER")
         sys.exit(0)
 
@@ -190,6 +233,7 @@ def main():
         print(BANNER)
         smart_cli_clean(target_path)
         clean_project_files(target_path)
+        clean_orphan_dependencies(target_path, days_inactive=30)
         clean_system_temp()
         empty_trash()
         print("\n=========================================")
